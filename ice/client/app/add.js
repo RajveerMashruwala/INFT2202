@@ -23,9 +23,17 @@ async function submitAnimalForm ( event ) {
         console.log('were good');
         
         const formData = new FormData(animalForm);
+        //create a javascript object to hold the form data
         const animalObject = {};
         formData.forEach((value, key) => {
-            animalObject[key] = value;
+            //by default, a value from form is string
+            //we need to convert them accordingly
+            if(key === 'eyes' || key ==='legs'){
+                animalObject[key] = Number(value);
+            }
+            else{
+                animalObject[key] = value;
+            }
         });
 
         const eleNameError = animalForm.name.nextElementSibling
@@ -52,7 +60,6 @@ function validateAnimalForm ( form ) {
     // test that name is valid
     const name = form.name.value;
     const eleNameError = form.name.nextElementSibling
-
     if (name == "") {
         eleNameError.classList.remove('d-none');
         eleNameError.textContent = "You must name this animal!";
