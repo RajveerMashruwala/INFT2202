@@ -3,13 +3,12 @@
 <!-- Date: 10/01/2025 -->
 <!-- Description: This is the of my site. It is the first page anyone will see when they come here. -->
 */
+
 // tell us what page we're on
 console.log('we are on the add page');
-
 // assign a handler to the submit event
 document.getElementById('animal-form')
     .addEventListener('submit', submitAnimalForm);
-
 // create a handler to deal with the submit event
 async function submitAnimalForm ( event ) {
     // prevent the default action from happening
@@ -21,11 +20,12 @@ async function submitAnimalForm ( event ) {
     // do stuff if the form is valid
     if (valid) {
         console.log('were good');
-        
+
         const formData = new FormData(animalForm);
         //create a javascript object to hold the form data
         const animalObject = {};
         formData.forEach((value, key) => {
+            animalObject[key] = value;
             //by default, a value from form is string
             //we need to convert them accordingly
             if(key === 'eyes' || key ==='legs'){
@@ -52,7 +52,6 @@ async function submitAnimalForm ( event ) {
         console.log('were not good');
     }
 }
-
 // validate the animal form
 function validateAnimalForm ( form ) {
     console.log('validating')
@@ -60,6 +59,7 @@ function validateAnimalForm ( form ) {
     // test that name is valid
     const name = form.name.value;
     const eleNameError = form.name.nextElementSibling
+
     if (name == "") {
         eleNameError.classList.remove('d-none');
         eleNameError.textContent = "You must name this animal!";
@@ -68,7 +68,6 @@ function validateAnimalForm ( form ) {
         eleNameError.classList.add('d-none');
     }
     // add validation for the remaining fields. 
-
     // return if the form is valid or not
     return valid
 }
