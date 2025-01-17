@@ -9,14 +9,13 @@ function AnimalService() {
         localStorage.setItem('animals', JSON.stringify([]))
     }    
 }
-
 /*
  *
  */
 AnimalService.prototype.getAnimals = function() {
     // this will always be set, because we did it in the constructor
+    return JSON.parse(localStorage.getItem('animals'));
 }
-
 /*
  *
  */
@@ -36,31 +35,19 @@ AnimalService.prototype.saveAnimal = function(animal) {
     // tell the caller all was well
     return true;
 }
-
 /*
  *
  */
 AnimalService.prototype.findAnimal = function(animalName) {
-    const animals = this.getAnimals();
-    const animal = animals.find(a => a.name == animalName);
-    if (!animal) {
-        throw new Error('That animal does not exist!');
-    }
-    return animal;
+    return null;
 }
 
 /*
  *
  */
 AnimalService.prototype.updateAnimal = function(animal) {
-    const animals = this.getAnimals();
-    const idx = animals.findIndex(a => a.name == animal.name);
-    if (idx === -1) {
-        throw new Error('That animal does not exist!');
-    }
-    animals[idx] = animal;
-    localStorage.setItem('animals', JSON.stringify(animals));
-    return true;
+
+    return false;
 }
 
 /*
