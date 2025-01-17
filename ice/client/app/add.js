@@ -70,5 +70,5 @@ function validateAnimalForm ( form ) {
     // add validation for the remaining fields. 
 
     // return if the form is valid or not
-    return valid
+    return valid
 }
