@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>My test page</title>
+    <style>
+      .flex-pair {
+        display: flex;
+        padding: 0 3rem 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="http://localhost:9876/inft" method="post" enctype="multipart/form-data">
+
+          <label for="name" class="flex-pair">Name:
+            <input type="text" id="name" name="user_name" />
+          </label>         
+
+          <label for="mail" class="flex-pair">Email:
+            <input type="email" id="mail" name="user_email" />
+          </label>         
+
+          <label for="msg" class="flex-pair">Message:
+            <textarea id="msg" name="user_message">
+              Working with webForm
+            </textarea>
+          </label>
+
+
+          <input id="file" name="user_file" type="file" multiple="" class="flex-pair">
+
+          <button type="submit">Send your message</button>
+    </form>    
+  </body>
+</html>

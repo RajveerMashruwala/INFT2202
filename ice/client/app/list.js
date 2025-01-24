@@ -1,7 +1,4 @@
-// Name: Rajveer Mashruwala
-// course: INFT 2202
-// Date: 17/01/2025
-// Description: list page
+
 console.log('we are on the list page');
 
 /* do table stuff */
@@ -46,7 +43,7 @@ function drawAnimalTable(animals)
         const eleBtnEdit = document.createElement('a');
         eleBtnEdit.classList.add('btn', 'btn-primary', 'mx-1');
         eleBtnEdit.innerHTML = `<i class="fa fa-user"></i>`;
-        eleBtnEdit.href = `./add.html?name=${animal.name}`
+        eleBtnEdit.href = `./animal.html?name=${animal.name}`
         // add the edit button to the button cell
         eleBtnCell.append(eleBtnEdit);
     }

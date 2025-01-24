@@ -1,0 +1,65 @@
+<!--
+Name: Cheng He
+Description: form demo page
+-->
+<html lang="en-us">
+
+<head>
+  <title>INFT 2202</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="d-flex flex-column h-100">
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1>Create User</h1>
+      <hr>
+      <!-- action="https://reqres.in/api/users" -->
+      <form id="animal-form" method="POST">
+        <div class="mb-2">
+          <div class="mb-3">
+            <label for="name" class="form-label">User Name</label>
+            <input type="text" class="form-control" name="name">
+            <p class="text-danger d-none">currently hidden</p>
+          </div>
+          <div class="mb-3">
+            <label for="breed" class="form-label">Position</label>
+            <input type="text" class="form-control" name="job">
+            <p class="text-danger d-none"></p>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+  <script>
+    if (!localStorage.getItem('users')) {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage  
+      // create a new entry in local storage and put an empty array in it
+      localStorage.setItem('users', JSON.stringify([]))
+    }
+    document.getElementById('animal-form').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the form from submitting the traditional way
+
+      // Gather form data
+      const formData = new FormData(this);
+      const user = {};
+      formData.forEach((value, key) => {
+        user[key] = value;
+      });
+
+      let users = JSON.parse(localStorage.getItem('users'));
+      users.push(user);
+      // and save it in storage again
+      localStorage.setItem('users', JSON.stringify(users));
+    });      
+  </script>
+</body>
+
+</html>

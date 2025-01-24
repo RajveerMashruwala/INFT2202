@@ -1,7 +1,3 @@
-// Name: Rajveer Mashruwala
-// course: INFT 2202
-// Date: 17/01/2025
-// Description: list page
 // tell us what page we're on
 console.log('we are on the add page');
 

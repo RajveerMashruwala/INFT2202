@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<script src='./function.js'></script>
+	<script>
+		function Test(evt) {
+            console.log('funcAdd', func.funcAdd(2,3));
+//console.log('funcAdd', func.arrowAdd(2,3));
+            console.log('funcAdd', arrowAdd(2,3));
+		}		
+	</script>    
+</head>
+
+<body>
+	<div>
+		<button type="button" id="btnTest" onclick="Test(event);event.stopPropagation();"> Test </button>
+	</div>
+</body>
+
+</html>
