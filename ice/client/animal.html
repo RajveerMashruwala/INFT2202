@@ -15,7 +15,7 @@ Description: animal.html
 
       const params = new URL(document.location).searchParams;
       const name = params.get("name");
-      const animal = animalBuilder(name);
+      const animal = await animalBuilder(name);
       
       document.querySelector('main div h1').innerHTML = animal.description;
       const container = document.querySelector('main .container');
