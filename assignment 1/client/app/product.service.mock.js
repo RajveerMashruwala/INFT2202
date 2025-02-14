@@ -33,7 +33,7 @@ class ProductService {
         if (products.find(p => p.name === product.name)) {
             throw new Error('A product with that name already exists!');
         }
-        products.push(product);
+        products.unshift(product);
         localStorage.setItem('products', JSON.stringify(products));
         return true;
     }
