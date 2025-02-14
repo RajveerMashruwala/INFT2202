@@ -1,108 +1,72 @@
-// create.js - Product Version (Fixed)
-console.log('we are on the add product page');
+/* create.js */
 
-// Form elements (Updated IDs)
-const productForm = document.getElementById('product-form');
-const errorElements = {
-    name: document.querySelector('#name + .text-danger'),
-    description: document.querySelector('#description + .text-danger'),
-    stock: document.querySelector('#stock + .text-danger'),
-    price: document.querySelector('#price + .text-danger')
-};
+import productService from "./product.service.mock.js";
 
-// Event listeners
-productForm.addEventListener('submit', submitProductForm);
+console.log('We are on the add product page');
 
-// Main form handler (Fixed field names)
+document.getElementById('product-form')
+    .addEventListener('submit', submitProductForm);
+
 async function submitProductForm(event) {
     event.preventDefault();
-    resetErrors();
+    const productForm = event.target;
+    const valid = validateProductForm(productForm);
     
-    const formData = new FormData(productForm);
-    const product = {
-        name: formData.get('name').trim(),
-        description: formData.get('description').trim(),
-        stock: formData.get('stock'),
-        price: formData.get('price')
-    };
+    if (valid) {
+        console.log('Form is valid');
+        
+        const formData = new FormData(productForm);
+        const productObject = {};
+        formData.forEach((value, key) => {
+            if (key === 'price' || key === 'stock') {
+                productObject[key] = Number(value);
+            } else {
+                productObject[key] = value;
+            }
+        });
 
-    if (validateProductForm(product)) {
+        const eleNameError = productForm.name.nextElementSibling;
         try {
-            await productService.saveProduct([{
-                ...product,
-                stock: parseInt(product.stock),
-                price: parseFloat(product.price)
-            }]);
-            
+            await productService.saveProduct(productObject);
+            eleNameError.classList.add('d-none');
             productForm.reset();
-            window.location.href = './list.html';
+            window.location = './list.html';
         } catch (error) {
-            handleServiceError(error);
+            console.log(error);
+            eleNameError.classList.remove('d-none');
+            eleNameError.textContent = "This product already exists!";
         }
-    }
-}
-
-// Validation functions (Updated IDs)
-function validateProductForm(product) {
-    let isValid = true;
-
-    // Name validation
-    if (!product.name) {
-        errorElements.name.textContent = 'Product name is required';
-        errorElements.name.classList.remove('d-none');
-        isValid = false;
-    }
-
-    // Description validation
-    if (!product.description) {
-        errorElements.description.textContent = 'Product description is required';
-        errorElements.description.classList.remove('d-none');
-        isValid = false;
-    }
-
-    // Stock validation
-    if (!product.stock) {
-        errorElements.stock.textContent = 'Stock quantity is required';
-        errorElements.stock.classList.remove('d-none');
-        isValid = false;
-    } else if (isNaN(product.stock) || parseInt(product.stock) < 0) {
-        errorElements.stock.textContent = 'Invalid stock quantity';
-        errorElements.stock.classList.remove('d-none');
-        isValid = false;
-    }
-
-    // Price validation
-    if (!product.price) {
-        errorElements.price.textContent = 'Price is required';
-        errorElements.price.classList.remove('d-none');
-        isValid = false;
-    } else if (isNaN(product.price) || parseFloat(product.price) <= 0) {
-        errorElements.price.textContent = 'Invalid price value';
-        errorElements.price.classList.remove('d-none');
-        isValid = false;
-    }
-
-    return isValid;
-}
-
-// Error handling (No changes needed)
-function resetErrors() {
-    Object.values(errorElements).forEach(element => {
-        element.textContent = '';
-        element.classList.add('d-none');
-    });
-}
-
-function handleServiceError(error) {
-    console.error('Product save error:', error);
-    
-    if (error.includes('already exists')) {
-        errorElements.name.textContent = 'Product name already exists';
-        errorElements.name.classList.remove('d-none');
     } else {
-        const errorMessage = document.createElement('div');
-        errorMessage.className = 'alert alert-danger mt-3';
-        errorMessage.textContent = `Error saving product: ${error}`;
-        productForm.parentNode.insertBefore(errorMessage, productForm.nextSibling);
+        console.log('Form is invalid');
     }
+}
+
+function validateProductForm(form) {
+    console.log('Validating form');
+    let valid = true;
+    const name = form.name.value;
+    const eleNameError = form.name.nextElementSibling;
+    if (name === "") {
+        eleNameError.classList.remove('d-none');
+        eleNameError.textContent = "You must name this product!";
+        valid = false;
+    } else {
+        eleNameError.classList.add('d-none');
+    }
+
+    const price = form.price.value;
+    const elePriceError = form.price.nextElementSibling;
+    if (price === "") {
+        elePriceError.classList.remove('d-none');
+        elePriceError.textContent = "Enter product price!";
+        valid = false;
+    } else if (isNaN(price)) {
+        elePriceError.classList.remove('d-none');
+        elePriceError.textContent = "Price must be a number!";
+        valid = false;
+    } else {
+        elePriceError.classList.add('d-none');
+    }
+    
+    return valid;
 }

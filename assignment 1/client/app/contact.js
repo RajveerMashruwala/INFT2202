@@ -1,102 +1,79 @@
-// Initialize message storage
+// make sure storage is set up for messages
 if (!localStorage.getItem('messages')) {
     localStorage.setItem('messages', JSON.stringify([]));
 }
-const messageStore = JSON.parse(localStorage.getItem('messages'));
+const store = JSON.parse(localStorage.getItem('messages'));
 
-// DOM elements
+/*
+ *  If storage has items, draw them.
+ *  Otherwise, display an error
+ */
 const container = document.getElementById('message-container');
+if (store.length) {
+    // draw all the stored messages
+    const elements = store.map(drawMessageCard);
+    elements.forEach(element => container.appendChild(element));  // Append to container
+} else {
+    // Draw an error message if no messages are stored
+    const errorMessage = document.createElement('p');
+    errorMessage.textContent = 'No messages available.';
+    container.appendChild(errorMessage);
+}
+
+// get a reference to the form
 const formElement = document.getElementById('contact-form');
+// attach the event listener
+formElement.addEventListener('submit', formSubmitHandler);
 
-// Initial render
-renderMessages();
-
-// Form submission handler
-formElement.addEventListener('submit', function(event) {
+/*
+ * Handle form submission and store message
+ */
+function formSubmitHandler(event) {
+    // stop the default handler from executing
     event.preventDefault();
-    
-    const formData = new FormData(event.target);
+
+    // log out some values
+    console.log(`name: ${event.target.name.value}`);
+    console.log(`phone: ${event.target.phone.value}`);
+    console.log(`email: ${event.target.email.value}`);
+    console.log(`message: ${event.target.message.value}`);
+
+    // create a new ContactMessage
     const message = new ContactMessage({
-        name: formData.get('name').trim(),
-        phone: formData.get('phone').trim(),
-        email: formData.get('email').trim(),
-        message: formData.get('message').trim()
+        name: event.target.name.value,
+        phone: event.target.phone.value,
+        email: event.target.email.value,
+        message: event.target.message.value,
     });
 
-    if (validateMessage(message)) {
-        saveMessage(message);
-        event.target.reset();
-        renderMessages();
-    }
-});
-
-// Validation function
-function validateMessage(message) {
-    let isValid = true;
-    
-    if (!message.name) {
-        alert('Please enter your name');
-        isValid = false;
-    }
-    
-    if (!message.email.includes('@')) {
-        alert('Please enter a valid email address');
-        isValid = false;
-    }
-    
-    if (!message.message) {
-        alert('Please enter a message');
-        isValid = false;
-    }
-    
-    return isValid;
+    // try to store it
+    store.push(message);
+    localStorage.setItem('messages', JSON.stringify(store));
 }
 
-// Save message to storage
-function saveMessage(message) {
-    messageStore.push(message);
-    localStorage.setItem('messages', JSON.stringify(messageStore));
-}
 
-// Render messages
-function renderMessages() {
-    container.innerHTML = '';
-    
-    if (messageStore.length === 0) {
-        container.innerHTML = `
-            <div class="alert alert-info">
-                No messages yet. Be the first to contact us!
-            </div>
-        `;
-        return;
-    }
-
-    messageStore.forEach(message => {
-        container.appendChild(createMessageCard(message));
-    });
-}
-
-// Create message card element
-function createMessageCard(message) {
+function drawMessageCard(message) {
+    // create a new card element
     const card = document.createElement('div');
-    card.className = 'card mb-3';
+    card.classList.add('card', 'mb-3');
+
+    // Add the content to the card
     card.innerHTML = `
         <div class="card-body">
             <h5 class="card-title">${message.name}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${message.email}</h6>
-            ${message.phone ? `<p class="card-text">Phone: ${message.phone}</p>` : ''}
-            <p class="card-text">${message.message}</p>
-            <small class="text-muted">${new Date().toLocaleString()}</small>
+            <p class="card-text"><strong>Phone:</strong> ${message.phone}</p>
+            <p class="card-text"><strong>Email:</strong> ${message.email}</p>
+            <p class="card-text"><strong>Message:</strong> ${message.message}</p>
         </div>
     `;
+
     return card;
 }
 
-// Contact message constructor
+
 function ContactMessage({ name, phone, email, message }) {
     this.name = name;
     this.phone = phone;
     this.email = email;
     this.message = message;
-    this.timestamp = new Date().toISOString();
 }
