@@ -2,16 +2,16 @@
  *  Since we are using the regular function keyword, 
  *   we can export our service instance up here.
  */
-export default new AnimalService({
+export default new ProductService({
     host: 'https://inft2202-server.onrender.com/',
     //host: 'http://localhost:3091',
-    user: 'your student id'
+    user: '100911307'
 });
 
 /*
  *  Constructor
  */
-function AnimalService({ host, user }) {
+function ProductService({ host, user }) {
     this.host = host;
     this.headers = new Headers({
         'Content-Type': 'application/json',
@@ -20,28 +20,11 @@ function AnimalService({ host, user }) {
 }
 
 /*
- *
+ * Get paginated products
  */
-AnimalService.prototype.findAnimal = async function(name) {
-    const url = new URL(`/api/animals/${name}`, this.host);
-    const req = new Request(url, {
-        headers: this.headers,
-        method: 'GET',
-    });
-    try {
-        const res = await fetch(req);
-        return res.json();
-    } catch (err) {
-        return false;
-    }
-}
-/*
- *
- */
-AnimalService.prototype.getAnimalPage = async function({ page = 1, perPage = 8 }) 
-{
+ProductService.prototype.getProductPage = async function({ page = 1, perPage = 8 }) {
     const params = new URLSearchParams({ page, perPage });
-    const url = new URL(`/api/animals?${params.toString()}`, this.host);
+    const url = new URL(`/api/products?${params.toString()}`, this.host);
     const req = new Request(url, {
         headers: this.headers,
         method: 'GET',
@@ -55,15 +38,14 @@ AnimalService.prototype.getAnimalPage = async function({ page = 1, perPage = 8 }
 }
 
 /*
- *
+ * Save a new product
  */
-AnimalService.prototype.saveAnimal = async function(animals) 
-{
-    const url = new URL(`/api/animals`, this.host);
+ProductService.prototype.saveProduct = async function(product) {
+    const url = new URL(`/api/products`, this.host);
     const req = new Request(url, {
         headers: this.headers,
         method: 'POST',
-        body: JSON.stringify(animals)
+        body: JSON.stringify(product)
     });
     try {
         const res = await fetch(req);
@@ -74,15 +56,31 @@ AnimalService.prototype.saveAnimal = async function(animals)
 }
 
 /*
- *
+ * Find a product by name
  */
-AnimalService.prototype.updateAnimal = async function(animal) 
-{
-    const url = new URL(`/api/animals`, this.host);
+ProductService.prototype.findProduct = async function(name) {
+    const url = new URL(`/api/products/${name}`, this.host);
+    const req = new Request(url, {
+        headers: this.headers,
+        method: 'GET',
+    });
+    try {
+        const res = await fetch(req);
+        return res.json();
+    } catch (err) {
+        return false;
+    }
+}
+
+/*
+ * Update a product
+ */
+ProductService.prototype.updateProduct = async function(product) {
+    const url = new URL(`/api/products`, this.host);
     const req = new Request(url, {
         headers: this.headers,
         method: 'PUT',
-        body: JSON.stringify(animal)
+        body: JSON.stringify(product)
     });
     try {
         const res = await fetch(req);
@@ -93,10 +91,10 @@ AnimalService.prototype.updateAnimal = async function(animal)
 }
 
 /*
- *
+ * Delete a product
  */
-AnimalService.prototype.deleteAnimal = async function(name) {
-    const url = new URL(`/api/animals/${name}`, this.host);
+ProductService.prototype.deleteProduct = async function(name) {
+    const url = new URL(`/api/products/${name}`, this.host);
     const req = new Request(url, {
         headers: this.headers,
         method: 'DELETE',
