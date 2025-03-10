@@ -20,9 +20,9 @@ function ProductService({ host, user }) {
 }
 
 /*
- * Get paginated products
+ * Get paginated products (updated to 20 per page)
  */
-ProductService.prototype.getProductPage = async function({ page = 1, perPage = 8 }) {
+ProductService.prototype.getProductPage = async function({ page = 1, perPage = 20 }) {
     const params = new URLSearchParams({ page, perPage });
     const url = new URL(`/api/products?${params.toString()}`, this.host);
     const req = new Request(url, {

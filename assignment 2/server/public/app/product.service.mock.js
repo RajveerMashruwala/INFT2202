@@ -1,9 +1,15 @@
-/* product.service.mock.js (main folder) */
-
 class ProductService {
     constructor() {
         if (!localStorage.getItem('products')) {
-            localStorage.setItem('products', JSON.stringify([]));
+            // Initialize with 20 sample products
+            const initialProducts = Array.from({ length: 20 }, (_, i) => ({
+                name: `Product ${i + 1}`,
+                price: (i + 1) * 10,
+                description: `Description for product ${i + 1}`,
+                inStock: true,
+                createdAt: new Date().toISOString()
+            }));
+            localStorage.setItem('products', JSON.stringify(initialProducts));
         }
     }
 
@@ -11,7 +17,8 @@ class ProductService {
         return JSON.parse(localStorage.getItem('products'));
     }
 
-    getProductPage({ page = 1, perPage = 15 }) {
+    // Updated to 20 per page default
+    getProductPage({ page = 1, perPage = 20 }) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const records = this.getProducts();
