@@ -1,16 +1,8 @@
-/*
- *  Since we are using the regular function keyword, 
- *   we can export our service instance up here.
- */
 export default new ProductService({
-    host: 'https://inft2202-server.onrender.com/api/products',
-    //host: 'http://localhost:3091',
+    host: 'https://inft2202-server.onrender.com/',
     user: '100911307'
 });
 
-/*
- *  Constructor
- */
 function ProductService({ host, user }) {
     this.host = host;
     this.headers = new Headers({
@@ -19,93 +11,72 @@ function ProductService({ host, user }) {
     });
 }
 
-/*
- * Get paginated products (updated to 20 per page)
- */
-ProductService.prototype.getProductPage = async function({ page = 1, perPage = 20 }) {
+ProductService.prototype.getProductPage = async function({ page = 1, perPage = 8 }) {
     const params = new URLSearchParams({ page, perPage });
     const url = new URL(`/api/products?${params.toString()}`, this.host);
-    const req = new Request(url, {
-        headers: this.headers,
-        method: 'GET',
-    });
     try {
-        const res = await fetch(req);
+        const res = await fetch(url, { headers: this.headers });
+        if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
     } catch (err) {
-        return false;
+        throw new Error('Failed to load products: ' + err.message);
     }
-}
+};
 
-/*
- * Save a new product
- */
 ProductService.prototype.saveProduct = async function(product) {
     const url = new URL(`/api/products`, this.host);
-    const req = new Request(url, {
-        headers: this.headers,
-        method: 'POST',
-        body: JSON.stringify(product)
-    });
     try {
-        const res = await fetch(req);
-        return res.json();
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: this.headers,
+            body: JSON.stringify(product)
+        });
+        const data = await res.json();
+        return res.ok ? data : Promise.reject(data);
     } catch (err) {
-        return false;
+        throw new Error(err.message || 'Failed to save product');
     }
-}
+};
 
-/*
- * Find a product by name
- */
 ProductService.prototype.findProduct = async function(name) {
     const url = new URL(`/api/products/${name}`, this.host);
-    const req = new Request(url, {
-        headers: this.headers,
-        method: 'GET',
-    });
     try {
-        const res = await fetch(req);
-        return res.json();
+        const res = await fetch(url, { headers: this.headers });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data;
     } catch (err) {
-        return false;
+        throw new Error('Failed to fetch product: ' + err.message);
     }
-}
+};
 
-/*
- * Update a product
- */
 ProductService.prototype.updateProduct = async function(product) {
     const url = new URL(`/api/products`, this.host);
-    const req = new Request(url, {
-        headers: this.headers,
-        method: 'PUT',
-        body: JSON.stringify(product)
-    });
     try {
-        const res = await fetch(req);
-        return res.json();
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: this.headers,
+            body: JSON.stringify(product)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Update failed');
+        return data;
     } catch (err) {
-        return false;
+        throw new Error('Failed to update product: ' + err.message);
     }
-}
+};
 
-/*
- * Delete a product
- */
 ProductService.prototype.deleteProduct = async function(name) {
     const url = new URL(`/api/products/${name}`, this.host);
-    const req = new Request(url, {
-        headers: this.headers,
-        method: 'DELETE',
-    });
     try {
-        const res = await fetch(req);
-        if (res.status === 204) {
-            return true;
-        }
-        return false;
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: this.headers
+        });
+        if (res.status === 204) return true;
+        const data = await res.json();
+        throw new Error(data.message || 'Delete failed');
     } catch (err) {
-        return false;
+        throw new Error('Failed to delete product: ' + err.message);
     }
-}
+};

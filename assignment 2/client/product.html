@@ -6,16 +6,42 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/style.css">
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script defer type="module">
-      import productBuilder from  "./app/products/index.js";
+    <script type="module" defer>
+      import productBuilder from "./app/products/index.js";
 
       const params = new URL(document.location).searchParams;
       const name = params.get("name");
-      const product = productBuilder(name);
-      
-      document.querySelector('main div h1').innerHTML = product.description;
       const container = document.querySelector('main .container');
-      container.append(product.element);      
+      
+      // Show loading state
+      container.innerHTML = `
+        <div class="text-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      `;
+
+      try {
+        const productComponent = await productBuilder(name);
+        
+        // Update page title and heading
+        document.title = productComponent.description;
+        container.innerHTML = `
+          <h1 class="mt-4">${productComponent.description}</h1>
+          <hr>
+          <div id="error-alert" class="alert alert-danger d-none"></div>
+        `;
+        
+        // Add form elements
+        container.append(productComponent.element);
+      } catch (error) {
+        container.innerHTML = `
+          <div class="alert alert-danger">
+            ${error.message}
+          </div>
+        `;
+      }
     </script>
   </head>
   <body class="d-flex flex-column h-100">
@@ -30,8 +56,7 @@
     </header>
     <main class="flex-shrink-0">
         <div class="container">
-          <h1></h1>
-          <hr>  
+          <!-- Content loaded dynamically -->
         </div>
       </main>
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-auto border-top">
@@ -42,7 +67,6 @@
           </a>
           <span class="mb-3 mb-md-0 text-body-secondary">© <span id="copyrightYear"></span> Rajveer Mashruwala, Inc</span>
         </div>
-    
         <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
           <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
           <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>

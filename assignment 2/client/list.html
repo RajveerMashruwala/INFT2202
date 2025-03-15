@@ -28,6 +28,12 @@
   <main class="flex-shrink-0">
     <div class="container">
 
+      <div id="loading" class="text-center my-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
       <div class="d-flex justify-content-between">
         <h1>Product List</h1>
         <div id="pagination" class="d-none"></div>
@@ -38,13 +44,14 @@
       </div>
 
       <table id="product-list" class="table table-striped d-none">
-        <!-- Updated table headers for product fields -->
         <thead>
-          <th>Name</th>
-          <th>Price</th>
-          <th>Stock</th>
-          <th>Description</th>
-          <th></th>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
         </thead>
         <tbody></tbody>
       </table>

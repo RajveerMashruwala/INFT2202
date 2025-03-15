@@ -3,7 +3,7 @@
  *   we can export our service instance up here.
  */
 export default new ProductService({
-    host: 'https://inft2202-server.onrender.com/api/products',
+    host: 'https://inft2202-server.onrender.com/',
     //host: 'http://localhost:3091',
     user: '100911307'
 });
@@ -20,9 +20,9 @@ function ProductService({ host, user }) {
 }
 
 /*
- * Get paginated products (updated to 20 per page)
+ * Get paginated products
  */
-ProductService.prototype.getProductPage = async function({ page = 1, perPage = 20 }) {
+ProductService.prototype.getProductPage = async function({ page = 1, perPage = 8 }) {
     const params = new URLSearchParams({ page, perPage });
     const url = new URL(`/api/products?${params.toString()}`, this.host);
     const req = new Request(url, {

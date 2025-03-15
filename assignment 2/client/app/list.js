@@ -1,89 +1,110 @@
-/* list.js */
+import productService from "./product.service.js";
 
-import productService from "./product.service.mock.js";
-
-console.log('We are on the product list page');
-
-const params = new URL(document.location).searchParams;
-let recCount = params.get("records");
-if (recCount !== null) {
-    let index = 0;
-    while (recCount-- > 0) {
-        productService.saveProduct({
-            "name": `Product ${index++}`,
-            "price": 10,
-            "stock": 5,
-            "desc": "Sample product description."
+document.addEventListener('DOMContentLoaded', async () => {
+    const loading = document.getElementById('loading');
+    const errorAlert = document.getElementById('error-alert');
+    const table = document.getElementById('product-list');
+    const tbody = table.querySelector('tbody');
+    
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const { records, pagination } = await productService.getProductPage({
+            page: Number(params.get('page')) || 1,
+            perPage: Number(params.get('perPage')) || 7
         });
+
+        loading.style.display = 'none';
+        
+        if (records.length === 0) {
+            document.getElementById('empty-message').classList.remove('d-none');
+            return;
+        }
+
+        table.classList.remove('d-none');
+        drawProductTable(records);
+        drawPagination(pagination);
+    } catch (error) {
+        loading.style.display = 'none';
+        errorAlert.textContent = error.message;
+        errorAlert.style.display = 'block';
     }
-}
+});
 
-const eleEmpty = document.getElementById('empty-message');
-const eleTable = document.getElementById('product-list');
+function drawPagination(pagination) {
+    const container = document.getElementById('pagination');
+    container.innerHTML = '';
+    
+    const ul = document.createElement('ul');
+    ul.className = 'pagination';
+    
+    // Previous button
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${pagination.page === 1 ? 'disabled' : ''}`;
+    const prevLink = document.createElement('a');
+    prevLink.className = 'page-link';
+    prevLink.href = `./list.html?page=${pagination.page - 1}&perPage=${pagination.perPage}`;
+    prevLink.textContent = 'Previous';
+    prevLi.appendChild(prevLink);
+    ul.appendChild(prevLi);
 
-let recordPage = {
-    page: Number(params.get('page') ?? 1),
-    perPage: Number(params.get('perPage') ?? 7)
-};
-const { records, pagination } = productService.getProductPage(recordPage);
-
-if (!records.length) {
-    eleEmpty.classList.remove('d-none');
-    eleTable.classList.add('d-none');
-} else {
-    eleEmpty.classList.add('d-none');
-    eleTable.classList.remove('d-none');
-    drawProductTable(records);
-    drawPagination(pagination);
-}
-
-function drawPagination({ page = 1, perPage = 5, pages = 10 }) {
-    const pagination = document.getElementById('pagination');
-    if (pages > 1) {
-        pagination.classList.remove('d-none');
+    // Page numbers
+    for (let i = 1; i <= pagination.pages; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === pagination.page ? 'active' : ''}`;
+        const link = document.createElement('a');
+        link.className = 'page-link';
+        link.href = `./list.html?page=${i}&perPage=${pagination.perPage}`;
+        link.textContent = i;
+        li.appendChild(link);
+        ul.appendChild(li);
     }
-    const ul = document.createElement("ul");
-    ul.classList.add('pagination');
-    ul.insertAdjacentHTML('beforeend', addPage(page - 1, 'Previous', (page == 1) ? 'disabled' : ''));
-    for (let i = 1; i <= pages; i++) {
-        ul.insertAdjacentHTML('beforeend', addPage(i, i, (i == page) ? 'active' : ''));
-    }
-    ul.insertAdjacentHTML('beforeend', addPage(page + 1, 'Next', (page == pages) ? 'disabled' : ''));
-    pagination.append(ul);
 
-    function addPage(number, text, style) {
-        return `<li class="page-item ${style}">
-            <a class="page-link" href="./list.html?page=${number}&perPage=${perPage}">${text}</a>
-        </li>`;
-    }
+    // Next button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${pagination.page === pagination.pages ? 'disabled' : ''}`;
+    const nextLink = document.createElement('a');
+    nextLink.className = 'page-link';
+    nextLink.href = `./list.html?page=${pagination.page + 1}&perPage=${pagination.perPage}`;
+    nextLink.textContent = 'Next';
+    nextLi.appendChild(nextLink);
+    ul.appendChild(nextLi);
+
+    container.appendChild(ul);
 }
 
 function drawProductTable(products) {
-    for (let product of products) {
-        const row = eleTable.insertRow();
-        row.insertCell().textContent = product.name;
-        row.insertCell().textContent = product.price;
-        row.insertCell().textContent = product.stock;
-        row.insertCell().textContent = product.desc;
+    const tbody = document.querySelector('#product-list tbody');
+    tbody.innerHTML = '';
 
-        const eleBtnCell = row.insertCell();
-        const eleBtnDelete = document.createElement('button');
-        eleBtnDelete.classList.add('btn', 'btn-danger', 'mx-1');
-        eleBtnDelete.innerHTML = `<i class="fa fa-trash"></i>`;
-        eleBtnDelete.addEventListener('click', onDeleteButtonClick(product));
-        eleBtnCell.append(eleBtnDelete);
+    products.forEach(product => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${product.name}</td>
+            <td>$${product.price.toFixed(2)}</td>
+            <td>${product.stock}</td>
+            <td>${product.desc}</td>
+            <td>
+                <button class="btn btn-danger btn-sm delete-btn" data-name="${product.name}">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <a href="./product.html?name=${product.name}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </td>
+        `;
+    });
 
-        const eleBtnEdit = document.createElement('a');
-        eleBtnEdit.classList.add('btn', 'btn-primary', 'mx-1');
-        eleBtnEdit.innerHTML = `<i class="fa fa-edit"></i>`;
-        eleBtnEdit.href = `./product.html?name=${product.name}`;
-        eleBtnCell.append(eleBtnEdit);
-    }
-}
-
-function onDeleteButtonClick(product) {
-    return event => {
-        productService.deleteProduct(product);
-        window.location.reload();
-    };
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete this product?')) {
+                try {
+                    await productService.deleteProduct(btn.dataset.name);
+                    window.location.reload();
+                } catch (error) {
+                    document.getElementById('error-alert').textContent = error.message;
+                    document.getElementById('error-alert').style.display = 'block';
+                }
+            }
+        });
+    });
 }
