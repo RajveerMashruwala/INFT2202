@@ -1,9 +1,6 @@
 /*
-Name: Cheyenne Norsworthy
-Filename: animal.service.js
-Course: INFT 2202
-Date: March 3, 2025
-Description: This is my general js create page.
+Name: Rajveer Mashruwala
+animal.service.js
 */
 
 export default new AnimalService({

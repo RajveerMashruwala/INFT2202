@@ -1,9 +1,6 @@
 /*
-Name: Cheyenne Norsworthy
-Filename: list.js
-Course: INFT 2202
-Date: March 3, 2025
-Description: This is my js list code.
+Name: Rajveer Mashruwala
+list.js
 */
 
 import animalService from "../animal.service.js";

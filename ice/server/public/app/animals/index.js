@@ -1,9 +1,6 @@
 /*
-Name: Cheyenne Norsworthy
-Filename: index.js
-Course: INFT 2202
-Date: March 3, 2025
-Description: This is my html animal page.
+Name: Rajveer Mashruwala
+index.js
 */
 import animalService from "../animal.service.js";
 
