@@ -1,9 +1,5 @@
 /*
-Name: Cheyenne Norsworthy
-Filename: animal.js
-Course: INFT 2202
-Date: March 10, 2025
-Description: This is my general js create page.
+Name: Rajveer Mashruwala
 */
 
 //import dataService from '../service/dataService.mock.js';

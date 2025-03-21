@@ -1,15 +1,10 @@
-/*
-Name: Rajveer Mashruwala
-animal.service.js
-*/
-
-export default new AnimalService({
+export default new ProductService({
     host: 'https://inft2202-server.onrender.com/',
-    //host: 'https://localhost:3091',
+    //host: 'https://inft2202-',
     user: '100911307'
 });
 
-function AnimalService({host, user}) {
+function ProductService({host, user}) {
     this.host = host;
     this.headers = new Headers({
         'Content-Type': 'application/json',
@@ -17,8 +12,8 @@ function AnimalService({host, user}) {
     });
 }
 
-AnimalService.prototype.findAnimal = async function(name) {
-    const url = new URL(`/api/animals/${name}`, this.host);
+ProductService.prototype.findProduct = async function(name) {
+    const url = new URL(`/api/products/${name}`, this.host);
     const req = new Request(url, {
         headers: this.headers,
         method: 'GET',
@@ -31,68 +26,54 @@ AnimalService.prototype.findAnimal = async function(name) {
     }
 }
 
-AnimalService.prototype.getAnimalPage = async function ({ page = 1, perPage = 8}) 
-{
+ProductService.prototype.getProductPage = async function ({ page = 1, perPage = 8}) {
     const params = new URLSearchParams({page, perPage});
-    const url = new URL(`/api/animals?${params.toString()}`, this.host);
-    const req = new Request(url, 
-        {
+    const url = new URL(`/api/products?${params.toString()}`, this.host);
+    const req = new Request(url, {
             headers: this.headers,
             method: 'GET',
-        });
-        try 
-        {
-            const res = await fetch(req);
-            return res.json();
-        } catch (err)
-        {
-            return false;
-        }
-}
-
-AnimalService.prototype.saveAnimal = async function(animals)
-{
-    const url = new URL(`/api/animals`, this.host);
-    const req = new Request(url, 
-        {
-            headers: this.headers,
-            method: 'POST',
-            body: JSON.stringify(animals)
-        });
-        try
-        {
-            const res = await fetch(req);
-            return res.json();
-        } catch (err)
-        {
-            return false;
-        }
-}
-
-
-AnimalService.prototype.updateAnimal = async function(animal)
-{
-    const url = new URL(`/api/animals`, this.host);
-    const req = new Request(url, 
-        {
-            headers: this.headers,
-            method: 'PUT',
-            body: JSON.stringify(animal)
         });
         try {
             const res = await fetch(req);
             return res.json();
-        } catch (err)
-        {
+        } catch (err) {
             return false;
         }
 }
 
-AnimalService.prototype.deleteAnimal = async function (name)
-{
-    const url = new URL(`/api/animals/${name}`, this.host);
-    const req = new Request(url, 
-        {
+ProductService.prototype.saveProduct = async function(products) {
+    const url = new URL(`/api/products`, this.host);
+    const req = new Request(url, {
+            headers: this.headers,
+            method: 'POST',
+            body: JSON.stringify(products)
+        });
+        try {
+            const res = await fetch(req);
+            return res.json();
+        } catch (err) {
+            return false;
+        }
+}
+
+ProductService.prototype.updateProduct = async function(product) {
+    const url = new URL(`/api/products`, this.host);
+    const req = new Request(url, {
+            headers: this.headers,
+            method: 'PUT',
+            body: JSON.stringify(product)
+        });
+        try {
+            const res = await fetch(req);
+            return res.json();
+        } catch (err) {
+            return false;
+        }
+}
+
+ProductService.prototype.deleteProduct = async function (name) {
+    const url = new URL(`/api/products/${name}`, this.host);
+    const req = new Request(url, {
             headers: this.headers,
             method: 'DELETE',
         });
@@ -102,8 +83,7 @@ AnimalService.prototype.deleteAnimal = async function (name)
                 return true;
             }
             return false;
-        } catch (err)
-        {
+        } catch (err) {
             return false;
         }
 }
