@@ -17,7 +17,7 @@
     "ejs-loader": "^0.5.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.3",
-    "webpack": "^5.98.0",
+    "webpack": "file:",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.0"
   }
