@@ -7,8 +7,8 @@ import { query,validationResult } from 'express-validator';
 function config(app) {
     
     // Parse JSON bodies and URL-encoded bodies
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
     
     app.use(loggingMiddleware);
 

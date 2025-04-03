@@ -66,7 +66,6 @@
     "safer-buffer": "^2.1.2",
     "send": "^0.19.0",
     "serve-static": "^1.16.2",
-    "server": "file:",
     "setprototypeof": "^1.2.0",
     "side-channel": "^1.1.0",
     "side-channel-list": "^1.0.0",
