@@ -19,6 +19,7 @@ function app(container) {
             container.append(animalBuilder(app).element);
         },
         listBuilder: function (app) {
+            app.name = null;
             navItems.forEach(item=>{
                 item.classList.remove('active');
                 item.removeAttribute('aria-current');
@@ -29,6 +30,7 @@ function app(container) {
             container.append(listBuilder(app).element);
         },
         coverBuilder: function(app){
+            app.name = null;
             navItems.forEach(item=>{
                 item.classList.remove('active');
                 item.removeAttribute('aria-current');
@@ -48,7 +50,7 @@ function app(container) {
     const router = async () => {
         //these are front end rout, which should match your release server folder
         const routes = [
-            { path: "/", view: () => appObj.coverBuilder(app) },
+            { path: "/", view: () => appObj.coverBuilder(appObj) },
             { path: "/animal", view: () => appObj.animalBuilder(appObj) },
             { path: "/list", view: () => appObj.listBuilder(appObj) }
         ];
