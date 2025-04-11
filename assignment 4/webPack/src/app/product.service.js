@@ -1,5 +1,5 @@
 export default new ProductService({
-    host: 'https://inft2202-server.onrender.com',
+    host: 'https://inft2202-server.onrender.com/products',
     user: '0000'
 });
 
